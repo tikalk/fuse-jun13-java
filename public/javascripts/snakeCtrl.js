@@ -56,20 +56,33 @@ function SnakesCtrl($scope) {
     }
 
     var onkeydown = function(e) {
+        var toSend = null;
         switch (e.which) {
             // key code for left arrow
             case 37:
-                console.log('left arrow key pressed!');
+                toSend = JSON.stringify({action:"left", player:$scope.gameData.currentPlayer})
                 break;
-
+            case 38:
+                toSend = JSON.stringify({action:"up", player:$scope.gameData.currentPlayer})
+                break;
             // key code for right arrow
             case 39:
-                console.log('right arrow key pressed!');
+                toSend = JSON.stringify({action:"right", player:$scope.gameData.currentPlayer})
+                break;
+            case 40:
+                toSend = JSON.stringify({action:"down", player:$scope.gameData.currentPlayer})
                 break;
         }
+        snakesWebSocket.send(toSend)
     }
-    var onJoinClick = function() {
-        snakesWebSocket.send()
+    $scope.onJoinClick = function() {
+        var toSend = JSON.stringify({action:"join", player:$scope.gameData.currentPlayer})
+        snakesWebSocket.send(toSend)
+    }
+    
+    $scope.onStartClick = function() {
+        var toSend = JSON.stringify({action:"start", player:$scope.gameData.currentPlayer})
+        snakesWebSocket.send(toSend)
     }
 }
 

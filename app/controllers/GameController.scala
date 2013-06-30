@@ -9,11 +9,15 @@ import akka.pattern.ask
 import play.api.libs.concurrent._
 import akka.util.Timeout
 
+import akka.snake.game.java._
+
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 
 object GameController {
   implicit val timeout = Timeout(1 second)
+  val sl:akka.snake.game.java.SnakeLogic = null
+  
   def start:Future[(Iteratee[JsValue,_],Enumerator[JsValue])] = {
     val actor = createActor
     (actor ? Start()).map {
@@ -42,9 +46,23 @@ class GameController extends Actor {
   private val (engineEnumerator, engineChannel) = Concurrent.broadcast[JsValue]
   private var StudioSessionData = null
 
+  class JavaCallback extends SnakeCallback {
+    override def handleData(gameData:GameData) {
+      engineChannel.push(JsString("sss"))
+    }
+  }
+  
+  private var snakeApi:SnakeApi = null;
+
   def receive = {  
       case Start() =>
-      sender ! StartSuccessful(engineEnumerator)
+        snakeApi = Snake.registerUICallback(new SnakeCallback {
+          def handleData(gameData:GameData) {
+            
+          }
+        })
+        
+        sender ! StartSuccessful(engineEnumerator)
   }
 }
 
