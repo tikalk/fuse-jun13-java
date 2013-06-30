@@ -15,15 +15,35 @@
         <script src="/assets/javascripts/snakeCtrl.js" type="text/javascript"></script>
     </head>
     <body ng-controller="SnakesCtrl" ng-init="onInit('@routes.Application.webSocket().webSocketURL()')">
+        <div id="modalGameover" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header"><h1>Game over!</h1></div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
         <div class="container-fluid">
             <div class="row-fluid"><br/>
                 <div class="span8 offset2">
                     <table>
                         <tr><td colspan="2">
-                            <div class="well text-center">
-                                <h1>Snakes battle!</h1>
-                            </div>
-                        </td></tr>
+                                <div class="well text-center">
+                                    <h1>Snakes battle!</h1>
+                                </div>
+                            </td></tr>
+                        <tr><td colspan="2">
+                                <div class="well" ng-show="gameData.state=='waiting'">
+                                    <div>
+                                    <form><fieldset>
+                                        <legend>Enter your player name to join the game</legend>
+                                        <label for="playerName">Enter your player name</label>
+                                        <input id="playerName" type="text" ng-bind="gameData.currentPlayer"></input>
+                                        <button type="submit" class="btn btn-primary" ng-click="onJoinClick">Join</button>
+                                    </fieldset></form>
+                                    </div>
+                                </div>
+                                <div class="well" ng-hide="gameData.state=='waiting'">
+                                    Your player name is {{gameData.currentPlayer}}
+                                </div>
+                            </td></tr>
                         <tr>
                             <td>
                                 <table>

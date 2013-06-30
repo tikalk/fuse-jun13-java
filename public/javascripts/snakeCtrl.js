@@ -30,7 +30,7 @@ function SnakesCtrl($scope) {
 
         currentPlayer:"player1",
 
-        state:"waiting", //"playing", "gameOver"
+        state:"waiting", //"waiting", "playing", "gameOver"
 
         score:{
             "player1":100,
@@ -67,6 +67,9 @@ function SnakesCtrl($scope) {
                 console.log('right arrow key pressed!');
                 break;
         }
+    }
+    var onJoinClick = function() {
+        snakesWebSocket.send()
     }
 }
 
