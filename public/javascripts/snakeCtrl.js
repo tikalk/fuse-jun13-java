@@ -73,7 +73,10 @@ function SnakesCtrl($scope) {
                 toSend = JSON.stringify({action:"down", player:$scope.gameData.currentPlayer})
                 break;
         }
-        snakesWebSocket.send(toSend)
+        if (toSend)
+            snakesWebSocket.send(toSend)
+        else
+            return true;
     }
     $scope.onJoinClick = function() {
         var toSend = JSON.stringify({action:"join", player:$scope.gameData.currentPlayer})

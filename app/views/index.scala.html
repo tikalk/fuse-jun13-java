@@ -35,7 +35,7 @@
                                     <form><fieldset>
                                         <legend>Enter your player name to join the game</legend>
                                         <label for="playerName">Enter your player name</label>
-                                        <input id="playerName" type="text" ng-bind="gameData.currentPlayer"></input>
+                                        <input id="playerName" type="text" ng-model="gameData.currentPlayer"></input>
                                         <button type="submit" class="btn btn-primary" ng-click="onJoinClick()">Join</button>
                                         <button type="button" class="btn btn-success" ng-click="onStartClick()">Start</button>
                                     </fieldset></form>

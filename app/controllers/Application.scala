@@ -12,7 +12,7 @@ object Application extends Controller {
     Ok(views.html.index())
   }
 
-  def webSocket = WebSocket.async[JsValue] {request =>  
+  def webSocket = WebSocket.using[JsValue] {request =>
     GameController.start
   }
   
