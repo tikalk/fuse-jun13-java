@@ -3,6 +3,8 @@ package logic
 import infrastructure._
 import akka.snake.game.java.Player
 import logic.PointOps._
+import scala.collection.JavaConversions
+import scala.util.Random
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,8 +13,73 @@ import logic.PointOps._
  * Time: 3:12 PM
  * To change this template use File | Settings | File Templates.
  */
-class SnakeLogic {
-  def kill(player: Player) = player.setAlive(false)
+object SnakeLogic {
+  val wall = new Wall;
+  val boardWidth=40
+  val boardHeight=20
+
+  def initializeGameData(players : Set[Player]) : GameData = {
+    val board = new Board(boardWidth, boardHeight)
+
+    for (x <- 0 until boardWidth; y <- 0 until boardHeight) {
+      board.put(new Point(0,y),wall)
+      board.put(new Point(x,0),wall)
+      board.put(new Point(boardWidth-1,y),wall)
+      board.put(new Point(x,boardHeight-1),wall)
+    }
+
+    for (player <- players) {
+      val snake=new Snake(player)
+      player.setSnake(snake)
+
+      var failed=false
+      var currentPoint : Point = null
+      var direction : Direction = null
+
+      do {
+        currentPoint=new Point(Random.nextInt(boardWidth),Random.nextInt(boardHeight))
+
+        direction=Random.nextInt(4) match {
+          case 0 => Direction.UP
+          case 1 => Direction.DOWN
+          case 2 => Direction.LEFT
+          case 3 => Direction.RIGHT
+        }
+
+        var point=currentPoint
+
+        for (i <- 0 to 5; !failed) {
+          if (board.get(point)!=null) {
+            failed=true
+          }
+
+          point = point + direction
+        }
+      } while (failed)
+
+      snake.setTail(currentPoint)
+
+      board.put(currentPoint,new SnakeBody(direction))
+
+      currentPoint=currentPoint+direction
+
+      board.put(currentPoint,new SnakeBody(direction))
+
+      currentPoint=currentPoint+direction
+
+      board.put(currentPoint,new SnakeHead(snake))
+
+      snake.setHead(currentPoint)
+    }
+
+    var fruitPoint : Point=null
+
+    do {
+      fruitPoint=new Point(Random.nextInt(boardWidth),Random.nextInt(boardHeight))
+    } while (board.get(fruitPoint)!=null)
+
+    new GameData(board,JavaConversions.setAsJavaSet(players))
+  }
 
   def movePlayers(gameData : GameData,snakeDirectionChanges : Map[Player,Direction]) : GameData = {
     val board = gameData.getBoard
@@ -58,4 +125,6 @@ class SnakeLogic {
 
     gameData
   }
+
+  def kill(player: Player) = player.setAlive(false)
 }
