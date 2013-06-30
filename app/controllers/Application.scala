@@ -7,14 +7,13 @@ import play.api.libs.iteratee.{Enumerator, Iteratee}
 
 object Application extends Controller {
   
+  
   def index = Action { implicit request =>
     Ok(views.html.index())
   }
 
-  def webSocket = WebSocket.using[JsValue] {request =>
-    val in:Iteratee[JsValue, _] = null
-    val out:Enumerator[JsValue] = null
-    (in,out)
+  def webSocket = WebSocket.async[JsValue] {request =>  
+    GameController.start
   }
   
 }
