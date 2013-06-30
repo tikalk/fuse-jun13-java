@@ -44,9 +44,15 @@ object GameController {
 class GameController extends Actor {
   implicit val timeout = Timeout(1 second)
   private val (engineEnumerator, engineChannel) = Concurrent.broadcast[JsValue]
+  private var StudioSessionData = null
+
+  class JavaCallback extends SnakeCallback {
+    override def handleData(gameData:GameData) {
+      engineChannel.push(JsString("sss"))
+    }
+  }
   
-  private var snakeApi:SnakeApi = null
-  private var playerName:String = null
+  private var snakeApi:SnakeApi = null;
 
   def receive = {  
       case Start() =>
@@ -57,24 +63,6 @@ class GameController extends Actor {
         })
         
         sender ! StartSuccessful(engineEnumerator)
-      case ProcessInput(input:JsValue) =>
-        playerName = (input \ "player").as[String]
-        (input \ "action").as[String] match {
-          case "join" =>
-            snakeApi.register(playerName, "aaa@ppp.com")
-          case "start" =>
-            snakeApi.startGame()
-          case "left" =>
-            snakeApi.move(playerName, "left")
-          case "right" =>
-            snakeApi.move(playerName, "right")
-          case "up" =>
-            snakeApi.move(playerName, "up")
-          case "down" =>
-            snakeApi.move(playerName, "down")
-        }
-      case Quit() =>
-        snakeApi.unregister(playerName)
   }
 }
 
